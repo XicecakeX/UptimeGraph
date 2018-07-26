@@ -1,0 +1,28 @@
+.axisBottom text{
+  text-anchor: end;
+  transform: rotate(-45deg);
+}
+
+.online{
+  fill: green;
+  stroke: black;
+  stroke-width: 0.5px;
+}
+
+.online:hover{
+  cursor: pointer;
+  stroke: #00334D;
+  stroke-width: 2px;
+}
+
+.offline{
+  fill: red;
+  stroke: black;
+  stroke-width: 0.5px;
+}
+
+.offline:hover{
+  cursor: pointer;
+  stroke: #00334D;
+  stroke-width: 2px;
+}
