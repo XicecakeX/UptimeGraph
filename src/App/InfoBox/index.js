@@ -1,14 +1,22 @@
 import React from 'react';
 import S from './index.module.css';
 import ClassNames from 'classnames';
+import {timeFormat} from 'd3-time-format';
 import CloseButton from './CloseButton';
 
 export default class InfoBox extends React.Component{
   /**loadData Function*/
   loadData = () => {
     //Declaring fields
+    let time = this.props.data.time;
     let status = "";
-    let time = this.props.data.time.toString();
+    let tf = {
+      weekday: timeFormat("%a"),
+      month: timeFormat("%b"),
+      day: timeFormat("%e"),
+      year: timeFormat("%Y"),
+      time: timeFormat("%X")
+    };
 
     //Checking status
     if(this.props.data.status === 1){
@@ -18,6 +26,13 @@ export default class InfoBox extends React.Component{
       //Setting status
       status = "Went offline at:";
     }
+
+    //Formatting time
+    time = tf.weekday(time).toString() + ". "
+            + tf.month(time).toString() + ". "
+            + tf.day(time).toString() + ", "
+            + tf.year(time).toString() + " "
+            + tf.time(time).toString();
 
     //Returning data
     return(
@@ -30,7 +45,6 @@ export default class InfoBox extends React.Component{
 
   /**Rendering Component*/
   render(){
-    console.log(this.props.data.time);
     return(
       <div className = {ClassNames(S[this.props.visibility], S.popup)}>
         <div className = {S.content}>

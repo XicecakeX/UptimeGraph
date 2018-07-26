@@ -33,7 +33,8 @@
 }
 
 .label{
-  padding-bottom: 5px;
+  float: left;
+  padding: 5px;
 }
 
 .popup{
@@ -49,5 +50,6 @@
 .title{
   float: left;
   padding: 5px;
+  text-align: right;
   width: 140px;
 }
