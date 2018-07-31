@@ -8,6 +8,21 @@ import {timeFormat} from 'd3-time-format';
 import S from './index.module.css';
 
 export default class MountpointContainer extends React.Component{
+  /**Default Constructor*/
+  constructor(){
+    super();
+    this.state = {
+      style: {
+        x: "",
+        y: "",
+        display: "none"
+      },
+      x: "",
+      y: ""
+    };
+    this.tag = React.createRef();
+  }
+
   /**createGraph Function*/
   createGraph = () => {
     //Declaring fields
@@ -54,6 +69,7 @@ export default class MountpointContainer extends React.Component{
     //Calculating maximum value
     let maxTime = max(outages, (d) => {return Math.max(d.time)});
 
+
     //Setting domain of x-scale
     xScale.domain([minTime, maxTime]);
 
@@ -94,16 +110,66 @@ export default class MountpointContainer extends React.Component{
           return yScale("Offline");
         }
       })
-      .attr("width", 10)
+      .attr("width", (d, i) => {
+        //Checking next
+        if(d.last === true){
+          //Returning width
+          return 10;
+        }else{
+          //Returning width
+          return (xScale(d.next) - xScale(d.time));
+        }
+      })
       .attr("height", ((height - margin) / 2))
       .on("click", (d) => {this.props.open(d)});
 
     //Converting to react
-    return div.toReact()
+    return div.toReact();
+  }
+
+  /**getPos Function*/
+  getPos = (x, y) => {
+    //Declaring fields
+    let divTag = this.tag.current.getBoundingClientRect();
+    let topBorder = divTag.top + 50;
+    let rightBorder = divTag.right - 40;
+    let bottomBorder = divTag.bottom - 50;
+    let leftBorder = divTag.left + 50;
+
+    //Creating style object
+    let style = {
+      top: y,
+      left: x,
+      display: ""
+    };
+
+    if((x < leftBorder || x > rightBorder) || (y < topBorder || y > bottomBorder)){
+      style.display = "none";
+    }else{
+      style.display = "block";
+    }
+
+    this.setState({
+      style: style,
+      x: x,
+      y: y
+    });
   }
 
   /**Rendering Component*/
   render(){
-    return this.createGraph();
+    const size = {
+      width: this.props.width,
+      height: this.props.height
+    };
+
+    return(
+      <div style = {size}
+        ref = {this.tag}
+        onMouseMove = {(event) => {this.getPos(event.clientX, event.clientY)}}>
+        <div style = {this.state.style} className = {S.tooltip}> {"X: " + this.state.x + " Y: " + this.state.y}</div>
+        {this.createGraph()}
+      </div>
+    );
   }
 }

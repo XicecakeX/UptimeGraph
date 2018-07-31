@@ -22,13 +22,47 @@ export default class App extends React.Component{
   componentDidMount(){
     //Declaring fields
     let data = this.state.data;
+    let newData = [
+      {
+        name: "Mountpoint 1",
+        outages: []
+      },
+      {
+        name: "Mountpoint 2",
+        outages: []
+      }
+    ];
 
-    //Calculating dates
-    data[0].outages.forEach((d) => {d.time = new Date(d.time * 1000)});
-    data[1].outages.forEach((d) => {d.time = new Date(d.time * 1000)});
+    //Iterating through data array
+    for(let i = 0; i < data.length; i++){
+      //Iterating through outages array
+      for(let j = 0; j < data[i].outages.length; j++){
+        //Calculating date
+        data[i].outages[j].time = new Date(data[i].outages[j].time * 1000);
+
+        //Checking for next outage
+        if(j === (data[i].outages.length - 1)){
+          //Adding outage
+          newData[i].outages.push({
+            time: data[i].outages[j].time,
+            status: data[i].outages[j].status,
+            next: data[i].outages[j].time,
+            last: true
+          });
+        }else{
+          //Adding outage
+          newData[i].outages.push({
+            time: data[i].outages[j].time,
+            status: data[i].outages[j].status,
+            next: new Date(data[i].outages[j + 1].time * 1000),
+            last: false
+          });
+        }
+      }
+    }
 
     //Setting state
-    this.setState({data: data});
+    this.setState({data: newData});
   }
 
   /**Rendering Component*/
@@ -38,10 +72,12 @@ export default class App extends React.Component{
         <MountpointContainer data = {this.state.data[0]}
           width = {800}
           height = {400}
+          graph = "graph1"
           open = {(d) => {this.setState({boxData: d, display: "display"})}}/>
         <MountpointContainer data = {this.state.data[1]}
           width = {800}
           height = {400}
+          graph = "graph2"
           open = {(d) => {this.setState({boxData: d, display: "display"})}}/>
         <InfoBox data = {this.state.boxData}
           close = {() => {this.setState({display: "hidden"})}}
