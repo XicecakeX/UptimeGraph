@@ -72,11 +72,13 @@ export default class App extends React.Component{
         <MountpointContainer data = {this.state.data[0]}
           width = {800}
           height = {400}
+          margin = {100}
           graph = "graph1"
           open = {(d) => {this.setState({boxData: d, display: "display"})}}/>
         <MountpointContainer data = {this.state.data[1]}
           width = {800}
           height = {400}
+          margin = {100}
           graph = "graph2"
           open = {(d) => {this.setState({boxData: d, display: "display"})}}/>
         <InfoBox data = {this.state.boxData}

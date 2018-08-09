@@ -17,8 +17,7 @@ export default class MountpointContainer extends React.Component{
         y: "",
         display: "none"
       },
-      x: "",
-      y: ""
+      x: ""
     };
     this.tag = React.createRef();
   }
@@ -28,7 +27,7 @@ export default class MountpointContainer extends React.Component{
     //Declaring fields
     let data = this.props.data;
     let outages = data.outages;
-    let margin = 100;
+    let margin = this.props.margin;
     let width = this.props.width;
     let height = this.props.height;
     let time = timeFormat("%X");
@@ -135,6 +134,18 @@ export default class MountpointContainer extends React.Component{
     let rightBorder = divTag.right - 40;
     let bottomBorder = divTag.bottom - 50;
     let leftBorder = divTag.left + 50;
+    let data = this.props.data.outages;
+    let tf = timeFormat("%X");
+
+    //Calculating min/max time
+    let minTime = min(data, (d) => {return Math.min(d.time)});
+    let maxTime = max(data, (d) => {return Math.max(d.time)})
+
+    //Calculating duration
+    let duration = (maxTime - minTime) / (this.props.width - this.props.margin);
+
+    //Calculating time
+    let time = (duration * (x - 50)) + minTime;
 
     //Creating style object
     let style = {
@@ -151,8 +162,7 @@ export default class MountpointContainer extends React.Component{
 
     this.setState({
       style: style,
-      x: x,
-      y: y
+      x: tf(time)
     });
   }
 
@@ -167,7 +177,7 @@ export default class MountpointContainer extends React.Component{
       <div style = {size}
         ref = {this.tag}
         onMouseMove = {(event) => {this.getPos(event.clientX, event.clientY)}}>
-        <div style = {this.state.style} className = {S.tooltip}> {"X: " + this.state.x + " Y: " + this.state.y}</div>
+        <div style = {this.state.style} className = {S.tooltip}> {"Time: " + this.state.x}</div>
         {this.createGraph()}
       </div>
     );
